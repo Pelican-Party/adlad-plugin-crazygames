@@ -20,7 +20,7 @@ export function crazyGamesPlugin() {
 
 			const sdkUrl = "https://sdk.crazygames.com/crazygames-sdk-v1.js";
 			await import(sdkUrl);
-			const crazysdk = window.CrazySDK.getInstance();
+			const crazysdk = window.CrazyGames.CrazySDK.getInstance();
 			crazysdk.init();
 			crazysdk.addEventListener("adFinished", () => {
 				fullScreenAdPromiseHandler(true);
