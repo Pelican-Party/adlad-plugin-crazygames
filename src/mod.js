@@ -55,7 +55,7 @@ export function crazyGamesPlugin() {
 				didShowAd: success,
 				errorReason: success ? null : "unknown",
 			};
-		}
+		},
 	};
 
 	return plugin;
