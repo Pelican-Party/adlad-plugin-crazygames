@@ -15,6 +15,6 @@
 		"scripts"
 	],
 	"files": [
-		"src/main.js"
+		"mod.js"
 	]
 }

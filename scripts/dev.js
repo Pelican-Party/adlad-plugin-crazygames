@@ -3,7 +3,7 @@ import { generateTypes } from "https://deno.land/x/deno_tsc_helper@v0.3.0/mod.js
 // deno-lint-ignore no-unused-vars
 import { AdLad } from "$adlad";
 
-import { setCwd } from "https://deno.land/x/chdir_anywhere@v0.0.2/mod.js";
+import { setCwd } from "$chdir_anywhere";
 setCwd(import.meta.url);
 Deno.chdir("..");
 
@@ -15,5 +15,4 @@ generateTypes({
 		"src",
 		// "test",
 	],
-	logLevel: "WARNING",
 });
