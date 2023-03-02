@@ -17,4 +17,9 @@ interface Window {
 declare class CrazySDK extends EventTarget {
 	static getInstance(): CrazySDK;
 	init();
+	sdkGameLoadingStart();
+	sdkGameLoadingStop();
+	gameplayStart();
+	gameplayStop();
+	requestAd(type: "midgame" | "rewarded");
 }

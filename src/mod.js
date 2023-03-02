@@ -1,6 +1,7 @@
 export function crazyGamesPlugin() {
-	/** @type {(instance: any) => void} */
+	/** @type {(instance: CrazySDK) => void} */
 	let resolveInstance;
+	/** @type {Promise<CrazySDK>} */
 	const instancePromise = new Promise((resolve) => {
 		resolveInstance = resolve;
 	});
@@ -29,6 +30,22 @@ export function crazyGamesPlugin() {
 				fullScreenAdPromiseHandler(false);
 			});
 			resolveInstance(crazysdk);
+		},
+		async loadStart() {
+			const crazysdk = await instancePromise;
+			crazysdk.sdkGameLoadingStart();
+		},
+		async loadStop() {
+			const crazysdk = await instancePromise;
+			crazysdk.sdkGameLoadingStop();
+		},
+		async gameplayStart() {
+			const crazysdk = await instancePromise;
+			crazysdk.gameplayStart();
+		},
+		async gameplayStop() {
+			const crazysdk = await instancePromise;
+			crazysdk.gameplayStop();
 		},
 		async showFullScreenAd() {
 			const crazysdk = await instancePromise;
