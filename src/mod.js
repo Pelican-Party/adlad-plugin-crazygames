@@ -12,7 +12,7 @@ export function crazyGamesPlugin() {
 
 	/** @type {import("$adlad").AdLadPlugin} */
 	const plugin = {
-		name: "CrazyGames",
+		name: "crazygames",
 		async initialize() {
 			if (initializeCalled) {
 				throw new Error("CrazyGames plugin is being initialized more than once");
