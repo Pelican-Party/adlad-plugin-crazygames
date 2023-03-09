@@ -13,7 +13,7 @@ export function crazyGamesPlugin() {
 	/** @type {import("$adlad").AdLadPlugin} */
 	const plugin = {
 		name: "crazygames",
-		async initialize() {
+		async initialize(ctx) {
 			if (initializeCalled) {
 				throw new Error("CrazyGames plugin is being initialized more than once");
 			}
@@ -23,14 +23,20 @@ export function crazyGamesPlugin() {
 			await import(sdkUrl);
 			const crazysdk = window.CrazyGames.CrazySDK.getInstance();
 			crazysdk.init();
+			crazysdk.addEventListener("adStarted", () => {
+				ctx.setNeedsPause(true);
+			});
 			crazysdk.addEventListener("adFinished", () => {
+				ctx.setNeedsPause(false);
 				fullScreenAdPromiseHandler(true);
 			});
 			crazysdk.addEventListener("adError", () => {
+				ctx.setNeedsPause(false);
 				fullScreenAdPromiseHandler(false);
 			});
 			resolveInstance(crazysdk);
 		},
+		manualNeedsPause: true,
 		async loadStart() {
 			const crazysdk = await instancePromise;
 			crazysdk.sdkGameLoadingStart();
