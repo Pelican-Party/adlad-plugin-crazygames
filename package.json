@@ -1,6 +1,6 @@
 {
 	"name": "@adlad/plugin-crazygames",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"description": "AdLad plugin for the CrazyGames sdk.",
 	"main": "mod.js",
 	"types": "dist/adlad-plugin-crazygames.d.ts",
