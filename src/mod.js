@@ -1,14 +1,41 @@
 export function crazyGamesPlugin() {
-	/** @type {(instance: CrazySDK) => void} */
-	let resolveInstance;
-	/** @type {Promise<CrazySDK>} */
-	const instancePromise = new Promise((resolve) => {
-		resolveInstance = resolve;
-	});
 	let initializeCalled = false;
 
-	/** @type {(success: boolean) => void} */
-	let fullScreenAdPromiseHandler = () => {};
+	/** @type {CrazySdkInstance} */
+	let sdk;
+	/** @type {import("$adlad").AdLadPluginInitializeContext} */
+	let initializeContext;
+
+	/**
+	 * @param {CrazySdkVideoAdType} type
+	 */
+	async function showVideoAd(type) {
+		/** @type {Promise<import("$adlad").ShowFullScreenAdResult>} */
+		const promise = new Promise((resolve) => {
+			sdk.ad.requestAd(type, {
+				adError() {
+					resolve({
+						didShowAd: false,
+						errorReason: "unknown",
+					});
+				},
+				adFinished() {
+					resolve({
+						didShowAd: true,
+						errorReason: null,
+					});
+				},
+				adStarted() {
+					initializeContext.setNeedsPause(true);
+					initializeContext.setNeedsMute(true);
+				},
+			});
+		});
+		const result = await promise;
+		initializeContext.setNeedsPause(false);
+		initializeContext.setNeedsMute(false);
+		return result;
+	}
 
 	/** @type {import("$adlad").AdLadPlugin} */
 	const plugin = {
@@ -18,66 +45,34 @@ export function crazyGamesPlugin() {
 				throw new Error("CrazyGames plugin is being initialized more than once");
 			}
 			initializeCalled = true;
+			initializeContext = ctx;
 
-			const sdkUrl = "https://sdk.crazygames.com/crazygames-sdk-v1.js";
-			await import(sdkUrl);
-			const crazysdk = window.CrazyGames.CrazySDK.getInstance();
-			crazysdk.init();
-			crazysdk.addEventListener("adStarted", () => {
-				ctx.setNeedsPause(true);
-			});
-			crazysdk.addEventListener("adFinished", () => {
-				ctx.setNeedsPause(false);
-				fullScreenAdPromiseHandler(true);
-			});
-			crazysdk.addEventListener("adError", () => {
-				ctx.setNeedsPause(false);
-				fullScreenAdPromiseHandler(false);
-			});
-			resolveInstance(crazysdk);
+			const sdkUrl = new URL("https://sdk.crazygames.com/crazygames-sdk-v2.js");
+			if (ctx.useTestAds) {
+				sdkUrl.searchParams.set("useLocalSdk", "true");
+			}
+			await import(sdkUrl.href);
+			sdk = window.CrazyGames.SDK;
 		},
 		manualNeedsPause: true,
+		manualNeedsMute: true,
 		async loadStart() {
-			const crazysdk = await instancePromise;
-			crazysdk.sdkGameLoadingStart();
+			await sdk.game.sdkGameLoadingStart();
 		},
 		async loadStop() {
-			const crazysdk = await instancePromise;
-			crazysdk.sdkGameLoadingStop();
+			await sdk.game.sdkGameLoadingStop();
 		},
 		async gameplayStart() {
-			const crazysdk = await instancePromise;
-			crazysdk.gameplayStart();
+			await sdk.game.gameplayStart();
 		},
 		async gameplayStop() {
-			const crazysdk = await instancePromise;
-			crazysdk.gameplayStop();
+			await sdk.game.gameplayStop();
 		},
 		async showFullScreenAd() {
-			const crazysdk = await instancePromise;
-			crazysdk.requestAd("midgame");
-			/** @type {Promise<boolean>} */
-			const fullScreenPromsise = new Promise((resolve) => {
-				fullScreenAdPromiseHandler = resolve;
-			});
-			const success = await fullScreenPromsise;
-			return {
-				didShowAd: success,
-				errorReason: success ? null : "unknown",
-			};
+			return await showVideoAd("midgame");
 		},
 		async showRewardedAd() {
-			const crazysdk = await instancePromise;
-			crazysdk.requestAd("rewarded");
-			/** @type {Promise<boolean>} */
-			const fullScreenPromsise = new Promise((resolve) => {
-				fullScreenAdPromiseHandler = resolve;
-			});
-			const success = await fullScreenPromsise;
-			return {
-				didShowAd: success,
-				errorReason: success ? null : "unknown",
-			};
+			return await showVideoAd("rewarded");
 		},
 	};
 
