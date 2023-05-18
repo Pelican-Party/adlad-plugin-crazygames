@@ -74,6 +74,9 @@ export function crazyGamesPlugin() {
 		async showRewardedAd() {
 			return await showVideoAd("rewarded");
 		},
+		showBannerAd(options) {
+			sdk.banner.requestResponsiveBanner(options.id);
+		},
 	};
 
 	return plugin;

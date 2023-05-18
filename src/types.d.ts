@@ -14,6 +14,9 @@ interface CrazySdkInstance {
 	ad: {
 		requestAd(type: CrazySdkVideoAdType, callbacks: CrazySdkVideoCallbacks);
 	};
+	banner: {
+		requestResponsiveBanner(id: string): void;
+	};
 }
 
 interface CrazySdkVideoCallbacks {
