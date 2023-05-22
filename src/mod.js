@@ -13,11 +13,28 @@ export function crazyGamesPlugin() {
 		/** @type {Promise<import("$adlad").ShowFullScreenAdResult>} */
 		const promise = new Promise((resolve) => {
 			sdk.ad.requestAd(type, {
-				adError() {
-					resolve({
-						didShowAd: false,
-						errorReason: "unknown",
-					});
+				adError(e) {
+					if (e == "Ad requested too soon") {
+						resolve({
+							didShowAd: false,
+							errorReason: "time-constraint",
+						});
+					} else if (e == "An ad request is already in progress") {
+						resolve({
+							didShowAd: false,
+							errorReason: "already-playing",
+						});
+					} else if (e == "No ad available") {
+						resolve({
+							didShowAd: false,
+							errorReason: "no-ad-available",
+						});
+					} else {
+						resolve({
+							didShowAd: false,
+							errorReason: "unknown",
+						});
+					}
 				},
 				adFinished() {
 					resolve({

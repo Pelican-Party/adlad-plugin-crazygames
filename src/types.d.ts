@@ -21,7 +21,7 @@ interface CrazySdkInstance {
 
 interface CrazySdkVideoCallbacks {
 	adFinished(): void;
-	adError(error: Error): void;
+	adError(error: string): void;
 	adStarted(): void;
 }
 
