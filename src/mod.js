@@ -54,8 +54,7 @@ export function crazyGamesPlugin() {
 		return result;
 	}
 
-	/** @type {import("$adlad").AdLadPlugin} */
-	const plugin = {
+	const plugin = /** @type {const} @satisfies {import("$adlad").AdLadPlugin} */ ({
 		name: "crazygames",
 		async initialize(ctx) {
 			if (initializeCalled) {
@@ -94,7 +93,7 @@ export function crazyGamesPlugin() {
 		showBannerAd(options) {
 			sdk.banner.requestResponsiveBanner(options.id);
 		},
-	};
+	});
 
 	return plugin;
 }
