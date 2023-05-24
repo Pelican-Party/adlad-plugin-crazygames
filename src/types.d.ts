@@ -10,6 +10,8 @@ interface CrazySdkInstance {
 		gameplayStop(): Promise<void>;
 		sdkGameLoadingStart(): Promise<void>;
 		sdkGameLoadingStop(): Promise<void>;
+		happytime(): Promise<void>;
+		inviteLink(params: Record<string, string>): Promise<string>;
 	};
 	ad: {
 		requestAd(type: CrazySdkVideoAdType, callbacks: CrazySdkVideoCallbacks);

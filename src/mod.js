@@ -93,6 +93,23 @@ export function crazyGamesPlugin() {
 		showBannerAd(options) {
 			sdk.banner.requestResponsiveBanner(options.id);
 		},
+		customRequests: {
+			happyTime() {
+				sdk.game.happytime();
+			},
+			/**
+			 * @param {ConstructorParameters<typeof URLSearchParams>} args
+			 */
+			async getShareableUrl(...args) {
+				const urlParams = new URLSearchParams(...args);
+				/** @type {Object.<string, string>} */
+				const paramsObj = {};
+				for (const [key, value] of urlParams.entries()) {
+					paramsObj[key] = value;
+				}
+				return await sdk.game.inviteLink(paramsObj);
+			}
+		}
 	});
 
 	return plugin;
