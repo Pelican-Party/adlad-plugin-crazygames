@@ -108,8 +108,8 @@ export function crazyGamesPlugin() {
 					paramsObj[key] = value;
 				}
 				return await sdk.game.inviteLink(paramsObj);
-			}
-		}
+			},
+		},
 	});
 
 	return plugin;
