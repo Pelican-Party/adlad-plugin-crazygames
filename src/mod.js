@@ -42,7 +42,7 @@ export function crazyGamesPlugin() {
 		/** @type {Promise<import("$adlad").ShowFullScreenAdResult>} */
 		const promise = new Promise((resolve) => {
 			sdk[props.ad][props.requestAd](type, {
-				adError(e) {
+				[props.adError](e) {
 					if (e == "Ad requested too soon") {
 						resolve({
 							didShowAd: false,
@@ -65,13 +65,13 @@ export function crazyGamesPlugin() {
 						});
 					}
 				},
-				adFinished() {
+				[props.adFinished]() {
 					resolve({
 						didShowAd: true,
 						errorReason: null,
 					});
 				},
-				adStarted() {
+				[props.adStarted]() {
 					initializeContext.setNeedsPause(true);
 					initializeContext.setNeedsMute(true);
 				},
