@@ -5,11 +5,12 @@ interface Window {
 }
 
 interface CrazySdkInstance {
+	init: () => Promise<void>;
 	game: {
 		gameplayStart(): Promise<void>;
 		gameplayStop(): Promise<void>;
-		sdkGameLoadingStart(): Promise<void>;
-		sdkGameLoadingStop(): Promise<void>;
+		loadingStart(): Promise<void>;
+		loadingStop(): Promise<void>;
 		happytime(): Promise<void>;
 		inviteLink(params: Record<string, string>): Promise<string>;
 	};

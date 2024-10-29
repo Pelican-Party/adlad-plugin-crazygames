@@ -4,13 +4,14 @@ export function crazyGamesPlugin() {
 	const props = /** @type {const} */ ({
 		CrazyGames: "CrazyGames",
 		SDK: "SDK",
+		init: "init",
 		game: "game",
 		ad: "ad",
 		banner: "banner",
 		gameplayStart: "gameplayStart",
 		gameplayStop: "gameplayStop",
-		sdkGameLoadingStart: "sdkGameLoadingStart",
-		sdkGameLoadingStop: "sdkGameLoadingStop",
+		loadingStart: "loadingStart",
+		loadingStop: "loadingStop",
 		happytime: "happytime",
 		inviteLink: "inviteLink",
 		requestAd: "requestAd",
@@ -92,20 +93,21 @@ export function crazyGamesPlugin() {
 			initializeCalled = true;
 			initializeContext = ctx;
 
-			const sdkUrl = new URL("https://sdk.crazygames.com/crazygames-sdk-v2.js");
+			const sdkUrl = new URL("https://sdk.crazygames.com/crazygames-sdk-v3.js");
 			if (ctx.useTestAds) {
 				sdkUrl.searchParams.set("useLocalSdk", "true");
 			}
 			await import(sdkUrl.href);
 			sdk = window[props.CrazyGames][props.SDK];
+			await sdk[props.init]();
 		},
 		manualNeedsPause: true,
 		manualNeedsMute: true,
 		async loadStart() {
-			await sdk[props.game][props.sdkGameLoadingStart]();
+			await sdk[props.game][props.loadingStart]();
 		},
 		async loadStop() {
-			await sdk[props.game][props.sdkGameLoadingStop]();
+			await sdk[props.game][props.loadingStop]();
 		},
 		async gameplayStart() {
 			await sdk[props.game][props.gameplayStart]();
