@@ -8,6 +8,7 @@ export function crazyGamesPlugin() {
 		game: "game",
 		ad: "ad",
 		banner: "banner",
+		data: "data",
 		gameplayStart: "gameplayStart",
 		gameplayStop: "gameplayStop",
 		loadingStart: "loadingStart",
@@ -19,6 +20,10 @@ export function crazyGamesPlugin() {
 		adFinished: "adFinished",
 		adError: "adError",
 		adStarted: "adStarted",
+		clear: "clear",
+		getItem: "getItem",
+		removeItem: "removeItem",
+		setItem: "setItem",
 	});
 
 	// @ts-ignore We want to make sure that `props` remains an object.
@@ -139,6 +144,26 @@ export function crazyGamesPlugin() {
 					paramsObj[key] = value;
 				}
 				return await sdk[props.game][props.inviteLink](paramsObj);
+			},
+			/**
+			 * @param {string} key
+			 * @param {string} value
+			 */
+			setStorageItem(key, value) {
+				sdk[props.data][props.setItem](key, value);
+			},
+			/**
+			 * @param {string} key
+			 * @returns {string | null}
+			 */
+			getStorageItem(key) {
+				return sdk[props.data][props.getItem](key);
+			},
+			removestorageItem(key) {
+				sdk[props.data][props.removeItem](key);
+			},
+			clearStorage() {
+				sdk[props.data][props.clear]();
 			},
 		},
 	});
