@@ -9,6 +9,7 @@ export function crazyGamesPlugin() {
 		ad: "ad",
 		banner: "banner",
 		data: "data",
+		user: "user",
 		gameplayStart: "gameplayStart",
 		gameplayStop: "gameplayStop",
 		loadingStart: "loadingStart",
@@ -24,6 +25,7 @@ export function crazyGamesPlugin() {
 		getItem: "getItem",
 		removeItem: "removeItem",
 		setItem: "setItem",
+		showAuthPrompt: "showAuthPrompt",
 	});
 
 	// @ts-ignore We want to make sure that `props` remains an object.
@@ -147,17 +149,19 @@ export function crazyGamesPlugin() {
 			},
 			/**
 			 * @param {string} key
-			 * @param {string} value
+			 * @param {unknown} value
 			 */
 			setStorageItem(key, value) {
-				sdk[props.data][props.setItem](key, value);
+				sdk[props.data][props.setItem](key, JSON.stringify(value));
 			},
 			/**
 			 * @param {string} key
-			 * @returns {string | null}
+			 * @returns {unknown | null}
 			 */
 			getStorageItem(key) {
-				return sdk[props.data][props.getItem](key);
+				const value = sdk[props.data][props.getItem](key);
+				if (value == null) return null;
+				return JSON.parse(value);
 			},
 			removestorageItem(key) {
 				sdk[props.data][props.removeItem](key);

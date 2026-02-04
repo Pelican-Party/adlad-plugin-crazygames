@@ -26,6 +26,9 @@ interface CrazySdkInstance {
 		removeItem(key: string): void;
 		setItem(key: string, value: string): void;
 	};
+	user: {
+		showAuthPrompt(): Promise<void>;
+	};
 }
 
 interface CrazySdkVideoCallbacks {
