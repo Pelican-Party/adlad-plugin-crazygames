@@ -169,6 +169,9 @@ export function crazyGamesPlugin() {
 			clearStorage() {
 				sdk[props.data][props.clear]();
 			},
+			showAuthPrompt() {
+				sdk[props.user][props.showAuthPrompt]();
+			},
 		},
 	});
 
