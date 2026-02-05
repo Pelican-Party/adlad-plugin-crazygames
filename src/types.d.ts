@@ -28,6 +28,7 @@ interface CrazySdkInstance {
 	};
 	user: {
 		showAuthPrompt(): Promise<void>;
+		getUser(): Promise<CrazyGamesUser | null>;
 	};
 }
 
@@ -38,3 +39,8 @@ interface CrazySdkVideoCallbacks {
 }
 
 type CrazySdkVideoAdType = "midgame" | "rewarded";
+
+type CrazyGamesUser = {
+	username: string;
+	profilePictureUrl: string;
+};

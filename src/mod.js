@@ -26,6 +26,7 @@ export function crazyGamesPlugin() {
 		removeItem: "removeItem",
 		setItem: "setItem",
 		showAuthPrompt: "showAuthPrompt",
+		getUser: "getUser",
 	});
 
 	// @ts-ignore We want to make sure that `props` remains an object.
@@ -171,6 +172,9 @@ export function crazyGamesPlugin() {
 			},
 			showAuthPrompt() {
 				sdk[props.user][props.showAuthPrompt]();
+			},
+			async getIsSignedIn() {
+				return Boolean(await sdk[props.user][props.getUser]());
 			},
 		},
 	});
