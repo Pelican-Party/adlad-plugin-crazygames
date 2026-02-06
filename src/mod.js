@@ -30,6 +30,7 @@ export function crazyGamesPlugin() {
 		addSettingsChangeListener: "addSettingsChangeListener",
 		settings: "settings",
 		muteAudio: "muteAudio",
+		username: "username",
 	});
 
 	// @ts-ignore We want to make sure that `props` remains an object.
@@ -190,6 +191,11 @@ export function crazyGamesPlugin() {
 			},
 			async getIsSignedIn() {
 				return Boolean(await sdk[props.user][props.getUser]());
+			},
+			async getUsername() {
+				const user = await sdk[props.user][props.getUser]();
+				if (!user) return null;
+				return user[props.username];
 			},
 		},
 	});
