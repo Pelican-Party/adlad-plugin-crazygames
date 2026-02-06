@@ -27,6 +27,9 @@ export function crazyGamesPlugin() {
 		setItem: "setItem",
 		showAuthPrompt: "showAuthPrompt",
 		getUser: "getUser",
+		addSettingsChangeListener: "addSettingsChangeListener",
+		settings: "settings",
+		muteAudio: "muteAudio",
 	});
 
 	// @ts-ignore We want to make sure that `props` remains an object.
@@ -82,14 +85,21 @@ export function crazyGamesPlugin() {
 				},
 				[props.adStarted]() {
 					initializeContext.setNeedsPause(true);
-					initializeContext.setNeedsMute(true);
+					mutedByAd = true;
+					updateNeedsMute();
 				},
 			});
 		});
 		const result = await promise;
 		initializeContext.setNeedsPause(false);
-		initializeContext.setNeedsMute(false);
+		mutedByAd = false;
+		updateNeedsMute();
 		return result;
+	}
+
+	let mutedByAd = false;
+	function updateNeedsMute() {
+		initializeContext.setNeedsMute(mutedByAd || sdk[props.game][props.settings][props.muteAudio]);
 	}
 
 	const plugin = /** @type {const} @satisfies {import("$adlad").AdLadPlugin} */ ({
@@ -108,6 +118,11 @@ export function crazyGamesPlugin() {
 			await import(sdkUrl.href);
 			sdk = window[props.CrazyGames][props.SDK];
 			await sdk[props.init]();
+
+			sdk[props.game][props.addSettingsChangeListener](() => {
+				updateNeedsMute();
+			});
+			updateNeedsMute();
 		},
 		manualNeedsPause: true,
 		manualNeedsMute: true,

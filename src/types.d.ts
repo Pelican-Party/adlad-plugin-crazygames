@@ -13,6 +13,11 @@ interface CrazySdkInstance {
 		loadingStop(): Promise<void>;
 		happytime(): Promise<void>;
 		inviteLink(params: Record<string, string>): Promise<string>;
+		addSettingsChangeListener(listener: () => void): void;
+		settings: {
+			disableChat: boolean;
+			muteAudio: boolean;
+		};
 	};
 	ad: {
 		requestAd(type: CrazySdkVideoAdType, callbacks: CrazySdkVideoCallbacks);
