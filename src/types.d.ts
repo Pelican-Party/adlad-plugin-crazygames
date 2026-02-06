@@ -18,6 +18,8 @@ interface CrazySdkInstance {
 			disableChat: boolean;
 			muteAudio: boolean;
 		};
+		showInviteButton(params: Record<string, string>): void;
+		hideInviteButton(): void;
 	};
 	ad: {
 		requestAd(type: CrazySdkVideoAdType, callbacks: CrazySdkVideoCallbacks);

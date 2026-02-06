@@ -31,6 +31,8 @@ export function crazyGamesPlugin() {
 		settings: "settings",
 		muteAudio: "muteAudio",
 		username: "username",
+		showInviteButton: "showInviteButton",
+		hideInviteButton: "hideInviteButton",
 	});
 
 	// @ts-ignore We want to make sure that `props` remains an object.
@@ -196,6 +198,15 @@ export function crazyGamesPlugin() {
 				const user = await sdk[props.user][props.getUser]();
 				if (!user) return null;
 				return user[props.username];
+			},
+			/**
+			 * @param {Object.<string, string>} parameters
+			 */
+			showInviteButton(parameters) {
+				sdk[props.game][props.showInviteButton](parameters);
+			},
+			hideInviteButton() {
+				sdk[props.game][props.hideInviteButton]();
 			},
 		},
 	});
