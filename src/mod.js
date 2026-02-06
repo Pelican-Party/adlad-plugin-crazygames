@@ -33,6 +33,7 @@ export function crazyGamesPlugin() {
 		username: "username",
 		showInviteButton: "showInviteButton",
 		hideInviteButton: "hideInviteButton",
+		isInstantMultiplayer: "isInstantMultiplayer",
 	});
 
 	// @ts-ignore We want to make sure that `props` remains an object.
@@ -207,6 +208,9 @@ export function crazyGamesPlugin() {
 			},
 			hideInviteButton() {
 				sdk[props.game][props.hideInviteButton]();
+			},
+			isInstantMultiplayer() {
+				return sdk[props.game][props.isInstantMultiplayer];
 			},
 		},
 	});

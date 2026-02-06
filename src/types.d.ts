@@ -20,6 +20,7 @@ interface CrazySdkInstance {
 		};
 		showInviteButton(params: Record<string, string>): void;
 		hideInviteButton(): void;
+		isInstantMultiplayer: boolean;
 	};
 	ad: {
 		requestAd(type: CrazySdkVideoAdType, callbacks: CrazySdkVideoCallbacks);
