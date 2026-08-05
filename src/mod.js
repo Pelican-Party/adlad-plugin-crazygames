@@ -151,6 +151,14 @@ export function crazyGamesPlugin() {
 		showBannerAd(options) {
 			sdk[props.banner][props.requestResponsiveBanner](options.id);
 		},
+		setStorageItem(key, value) {
+			sdk[props.data][props.setItem](key, JSON.stringify(value));
+		},
+		getStorageItem(key) {
+			const value = sdk[props.data][props.getItem](key);
+			if (value == null) return null;
+			return JSON.parse(value);
+		},
 		customRequests: {
 			happyTime() {
 				sdk[props.game][props.happytime]();
@@ -166,22 +174,6 @@ export function crazyGamesPlugin() {
 					paramsObj[key] = value;
 				}
 				return await sdk[props.game][props.inviteLink](paramsObj);
-			},
-			/**
-			 * @param {string} key
-			 * @param {unknown} value
-			 */
-			setStorageItem(key, value) {
-				sdk[props.data][props.setItem](key, JSON.stringify(value));
-			},
-			/**
-			 * @param {string} key
-			 * @returns {unknown | null}
-			 */
-			getStorageItem(key) {
-				const value = sdk[props.data][props.getItem](key);
-				if (value == null) return null;
-				return JSON.parse(value);
 			},
 			removestorageItem(key) {
 				sdk[props.data][props.removeItem](key);
