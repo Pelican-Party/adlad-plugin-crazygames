@@ -106,6 +106,32 @@ export function crazyGamesPlugin() {
 		initializeContext.setNeedsMute(mutedByAd || sdk[props.game][props.settings][props.muteAudio]);
 	}
 
+	const STORAGE_WRITE_COOLDOWN_MS = 30_000;
+	/** @type {Map<string, number>} */
+	const lastStorageWriteTimes = new Map();
+	/** @type {Map<string, ReturnType<typeof setTimeout>>} */
+	const pendingStorageTimeouts = new Map();
+
+	/**
+	 * @param {string} key
+	 * @param {unknown} value
+	 */
+	function writeStorageItem(key, value) {
+		sdk[props.data][props.setItem](key, JSON.stringify(value));
+		lastStorageWriteTimes.set(key, performance.now());
+	}
+
+	/**
+	 * @param {string} key
+	 */
+	function cancelStorageTimeout(key) {
+		const timeoutId = pendingStorageTimeouts.get(key);
+		if (timeoutId != null) {
+			clearTimeout(timeoutId);
+			pendingStorageTimeouts.delete(key);
+		}
+	}
+
 	const plugin = /** @type {const} @satisfies {import("$adlad").AdLadPlugin} */ ({
 		name: "crazygames",
 		async initialize(ctx) {
@@ -152,7 +178,21 @@ export function crazyGamesPlugin() {
 			sdk[props.banner][props.requestResponsiveBanner](options.id);
 		},
 		setStorageItem(key, value) {
-			sdk[props.data][props.setItem](key, JSON.stringify(value));
+			const lastWriteTime = lastStorageWriteTimes.get(key) ?? -Infinity;
+			const lastWriteMsAgo = performance.now() - lastWriteTime;
+
+			cancelStorageTimeout(key);
+
+			if (lastWriteMsAgo >= STORAGE_WRITE_COOLDOWN_MS) {
+				writeStorageItem(key, value);
+			} else {
+				const delay = STORAGE_WRITE_COOLDOWN_MS - lastWriteMsAgo;
+				const timeoutId = setTimeout(() => {
+					pendingStorageTimeouts.delete(key);
+					writeStorageItem(key, value);
+				}, delay);
+				pendingStorageTimeouts.set(key, timeoutId);
+			}
 		},
 		getStorageItem(key) {
 			const value = sdk[props.data][props.getItem](key);
@@ -176,9 +216,16 @@ export function crazyGamesPlugin() {
 				return await sdk[props.game][props.inviteLink](paramsObj);
 			},
 			removestorageItem(key) {
+				cancelStorageTimeout(key);
+				lastStorageWriteTimes.delete(key);
 				sdk[props.data][props.removeItem](key);
 			},
 			clearStorage() {
+				for (const timeoutId of pendingStorageTimeouts.values()) {
+					clearTimeout(timeoutId);
+				}
+				pendingStorageTimeouts.clear();
+				lastStorageWriteTimes.clear();
 				sdk[props.data][props.clear]();
 			},
 			showAuthPrompt() {
