@@ -34,6 +34,13 @@ export function crazyGamesPlugin() {
 		showInviteButton: "showInviteButton",
 		hideInviteButton: "hideInviteButton",
 		isInstantMultiplayer: "isInstantMultiplayer",
+		addJoinRoomListener: "addJoinRoomListener",
+		removeJoinRoomListener: "removeJoinRoomListener",
+		updateRoom: "updateRoom",
+		roomId: "roomId",
+		isJoinable: "isJoinable",
+		inviteParams: "inviteParams",
+		leftRoom: "leftRoom",
 	});
 
 	// @ts-ignore We want to make sure that `props` remains an object.
@@ -111,6 +118,8 @@ export function crazyGamesPlugin() {
 	const lastStorageWriteTimes = new Map();
 	/** @type {Map<string, ReturnType<typeof setTimeout>>} */
 	const pendingStorageTimeouts = new Map();
+
+	let lastProvidedRoomData = "";
 
 	/**
 	 * @param {string} key
@@ -214,6 +223,37 @@ export function crazyGamesPlugin() {
 					paramsObj[key] = value;
 				}
 				return await sdk[props.game][props.inviteLink](paramsObj);
+			},
+			/**
+			 * @param {UpdateRoomData} params
+			 */
+			updateRoom({
+				inviteParams,
+				isJoinable,
+				roomId,
+			}) {
+				/** @type {UpdateRoomData} */
+				const params = {};
+				if (roomId) params[props.roomId] = roomId;
+				if (isJoinable != undefined) params[props.isJoinable] = isJoinable;
+				if (inviteParams) params[props.inviteParams] = inviteParams;
+
+				// Don't call the sdk when nothing has changed
+				const str = JSON.stringify(params);
+				if (lastProvidedRoomData == str) return;
+				lastProvidedRoomData = str;
+
+				sdk[props.game][props.updateRoom](params);
+			},
+			leftRoom() {
+				lastProvidedRoomData = "";
+				sdk[props.game][props.leftRoom]();
+			},
+			addJoinRoomListener(listener) {
+				sdk[props.game][props.addJoinRoomListener](listener);
+			},
+			removeJoinRoomListener(listener) {
+				sdk[props.game][props.removeJoinRoomListener](listener);
 			},
 			removestorageItem(key) {
 				cancelStorageTimeout(key);

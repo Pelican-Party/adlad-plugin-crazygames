@@ -21,6 +21,10 @@ interface CrazySdkInstance {
 		showInviteButton(params: Record<string, string>): void;
 		hideInviteButton(): void;
 		isInstantMultiplayer: boolean;
+		updateRoom(roomData: UpdateRoomData): void;
+		leftRoom(): void;
+		addJoinRoomListener(listener: JoinRoomListener): void;
+		removeJoinRoomListener(listener: JoinRoomListener): void;
 	};
 	ad: {
 		requestAd(type: CrazySdkVideoAdType, callbacks: CrazySdkVideoCallbacks);
@@ -39,6 +43,14 @@ interface CrazySdkInstance {
 		getUser(): Promise<CrazyGamesUser | null>;
 	};
 }
+
+type UpdateRoomData = {
+	roomId?: string;
+	isJoinable?: boolean;
+	inviteParams?: Record<string, string>;
+};
+
+type JoinRoomListener = (params: Record<string, string>) => void;
 
 interface CrazySdkVideoCallbacks {
 	adFinished(): void;
