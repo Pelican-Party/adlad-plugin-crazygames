@@ -1,3 +1,16 @@
+/**
+ * @typedef UpdateRoomData
+ * @property {string} [roomId]
+ * @property {boolean} [isJoinable]
+ * @property {InviteParams} [inviteParams]
+ */
+
+/** @typedef {Record<string, string>} InviteParams */
+
+/**
+ * @typedef {(inviteParams: InviteParams) => void} JoinRoomListener
+ */
+
 export function crazyGamesPlugin() {
 	let initializeCalled = false;
 
@@ -249,9 +262,15 @@ export function crazyGamesPlugin() {
 				lastProvidedRoomData = "";
 				sdk[props.game][props.leftRoom]();
 			},
+			/**
+			 * @param {JoinRoomListener} listener
+			 */
 			addJoinRoomListener(listener) {
 				sdk[props.game][props.addJoinRoomListener](listener);
 			},
+			/**
+			 * @param {JoinRoomListener} listener
+			 */
 			removeJoinRoomListener(listener) {
 				sdk[props.game][props.removeJoinRoomListener](listener);
 			},
